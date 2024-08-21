@@ -1550,7 +1550,7 @@ pub enum ErrorCode {
 
 /// Z3 custom error handler (See [`Z3_set_error_handler`]).
 pub type Z3_error_handler =
-    ::std::option::Option<unsafe extern "C" fn(c: Z3_context, e: ErrorCode)>;
+    ::std::option::Option<unsafe extern "C-unwind" fn(c: Z3_context, e: ErrorCode)>;
 
 /// Precision of a given goal. Some goals can be transformed using over/under approximations.
 ///
@@ -1578,7 +1578,7 @@ pub enum GoalPrec {
     UnderOver = generated::Z3_goal_prec::Z3_GOAL_UNDER_OVER as u32,
 }
 
-extern "C" {
+extern "C-unwind" {
     /// Set a global (or module) parameter.
     /// This setting is shared by all Z3 contexts.
     ///
@@ -6472,7 +6472,7 @@ extern "C" {
 }
 /// The following utilities allows adding user-defined domains.
 pub type Z3_fixedpoint_reduce_assign_callback_fptr = ::std::option::Option<
-    unsafe extern "C" fn(
+    unsafe extern "C-unwind" fn(
         arg1: *mut ::std::os::raw::c_void,
         arg2: Z3_func_decl,
         arg3: ::std::os::raw::c_uint,
@@ -6482,7 +6482,7 @@ pub type Z3_fixedpoint_reduce_assign_callback_fptr = ::std::option::Option<
     ),
 >;
 pub type Z3_fixedpoint_reduce_app_callback_fptr = ::std::option::Option<
-    unsafe extern "C" fn(
+    unsafe extern "C-unwind" fn(
         arg1: *mut ::std::os::raw::c_void,
         arg2: Z3_func_decl,
         arg3: ::std::os::raw::c_uint,
@@ -6490,7 +6490,7 @@ pub type Z3_fixedpoint_reduce_app_callback_fptr = ::std::option::Option<
         arg5: *mut Z3_ast,
     ),
 >;
-extern "C" {
+extern "C-unwind" {
     /// Initialize the context with a user-defined state.
     pub fn Z3_fixedpoint_init(c: Z3_context, d: Z3_fixedpoint, state: *mut ::std::os::raw::c_void);
 
@@ -6512,18 +6512,18 @@ extern "C" {
 }
 
 pub type Z3_fixedpoint_new_lemma_eh = ::std::option::Option<
-    unsafe extern "C" fn(
+    unsafe extern "C-unwind" fn(
         state: *mut ::std::os::raw::c_void,
         lemma: Z3_ast,
         level: ::std::os::raw::c_uint,
     ),
 >;
 pub type Z3_fixedpoint_predecessor_eh =
-    ::std::option::Option<unsafe extern "C" fn(state: *mut ::std::os::raw::c_void)>;
+    ::std::option::Option<unsafe extern "C-unwind" fn(state: *mut ::std::os::raw::c_void)>;
 pub type Z3_fixedpoint_unfold_eh =
-    ::std::option::Option<unsafe extern "C" fn(state: *mut ::std::os::raw::c_void)>;
+    ::std::option::Option<unsafe extern "C-unwind" fn(state: *mut ::std::os::raw::c_void)>;
 
-extern "C" {
+extern "C-unwind" {
     /// Set export callback for lemmas.
     pub fn Z3_fixedpoint_add_callback(
         ctx: Z3_context,
@@ -8034,8 +8034,8 @@ extern "C" {
 
 #[cfg(not(windows))]
 #[link(name = "z3")]
-extern "C" {}
+extern "C-unwind" {}
 
 #[cfg(windows)]
 #[link(name = "libz3")]
-extern "C" {}
+extern "C-unwind" {}
